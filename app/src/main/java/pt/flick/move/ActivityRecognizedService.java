@@ -28,7 +28,6 @@ public class ActivityRecognizedService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d("ActivityRecogition", "teste");
         if(ActivityRecognitionResult.hasResult(intent)) {
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
             handleDetectedActivities( result.getProbableActivities() );

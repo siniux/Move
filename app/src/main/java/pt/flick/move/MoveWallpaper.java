@@ -35,6 +35,8 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
     ValueAnimator colorAnimation;
 
     long duration = 3600000;
+    //long duration = 30000;
+
     long tempDuration = duration;
     long walkDuration;
 
@@ -108,6 +110,8 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
     }
 
     private void walkAnimator(long time) {
+        Log.d("MOVE", "walkanimator");
+
         walkDuration = time;
 
         tempDuration = duration - colorAnimation.getCurrentPlayTime() + ( (long) (time * 100 / 3.125));
