@@ -103,17 +103,14 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
         colorAnimation.pause();
 
         tempColor = (int) colorAnimation.getAnimatedValue();
-        Log.d("MOVE", "walkanimator");
 
         walkDuration = time;
 
-//        long markDuration = colorAnimation.getCurrentPlayTime();
-
         tempDuration = colorAnimation.getCurrentPlayTime() - ( (long) (time * 100 / 3.125));
 
-//        tempDuration = colorAnimation.getCurrentPlayTime() - (long) (time * 3 / 2.1);
-
-        Log.d("MOVE", "tempDuration - " + tempDuration);
+        if (tempDuration <= 0) {
+            tempDuration = 0;
+        }
 
         colorAnimation.setCurrentPlayTime(tempDuration);
 

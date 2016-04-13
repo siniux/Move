@@ -39,14 +39,12 @@ public class ActivityRecognizedService extends IntentService {
         for (DetectedActivity activity : probableActivities) {
             switch (activity.getType()) {
                 case DetectedActivity.STILL: {
-                    Log.e("ActivityRecogition", "Still: " + activity.getConfidence());
                     if (activity.getConfidence() >= 50) {
                         sendMessage("still");
                     }
                     break;
                 }
                 case DetectedActivity.WALKING: {
-                    Log.e("ActivityRecogition", "Walking: " + activity.getConfidence());
                     if (activity.getConfidence() >= 50) {
                         sendMessage("walking");
                     }
