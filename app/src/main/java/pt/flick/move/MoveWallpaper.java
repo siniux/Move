@@ -23,10 +23,7 @@ import android.support.v7.app.NotificationCompat;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.SurfaceHolder;
-import android.widget.Toast;
-
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 
