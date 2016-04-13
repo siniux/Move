@@ -35,8 +35,8 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
     //Gestão das Cores
     ValueAnimator colorAnimation;
 
-    //    long duration = 3600000;
-    long duration = 30000;
+    long duration = 3600000;
+//    long duration = 30000;
 
     long tempDuration = duration;
     long walkDuration;
@@ -44,8 +44,6 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
     int tempColor;
 
     int tempReverseEndColor;
-
-    Boolean once = false;
 
     private void startAnimator() {
         int startColor = getApplicationContext().getResources().getColor(R.color.startColor);
@@ -63,38 +61,16 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
         colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), tempColor, endColor);
         colorAnimation.setDuration(tempDuration);
 
-
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-
-                Log.d("MOVE", String.valueOf(animation.getCurrentPlayTime()));
-
-
-                if (once == false) {
-                    if (animation.getCurrentPlayTime() >= 10000 && animation.getCurrentPlayTime() <= 11000) {
-                        Log.d("MOVE", "10segundos");
-                        walkAnimator(2000);
-                        once = true;
-                    }
-                }
-            }
-        });
-
         colorAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 // done
                 //Por a vibrar aqui
-                Log.d("MOVE", "acabei");
-
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
                 builder.setContentText("Time to MOVE!");
                 builder.setSmallIcon(R.mipmap.ic_launcher);
                 builder.setContentTitle(getString(R.string.app_name));
                 NotificationManagerCompat.from(getApplicationContext()).notify(0, builder.build());
-
-                once = false;
             }
         });
 
@@ -131,11 +107,11 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
 
         walkDuration = time;
 
-        long markDuration = colorAnimation.getCurrentPlayTime();
+//        long markDuration = colorAnimation.getCurrentPlayTime();
 
-//        tempDuration = colorAnimation.getCurrentPlayTime() - ( (long) (time * 100 / 3.125));
+        tempDuration = colorAnimation.getCurrentPlayTime() - ( (long) (time * 100 / 3.125));
 
-        tempDuration =  colorAnimation.getCurrentPlayTime() - (long) (time * 3 / 2.1);
+//        tempDuration = colorAnimation.getCurrentPlayTime() - (long) (time * 3 / 2.1);
 
         Log.d("MOVE", "tempDuration - " + tempDuration);
 
@@ -166,10 +142,7 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
         Log.d("ActivityRecogition", "connected");
         Intent intent = new Intent(this, ActivityRecognizedService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mApiClient, 1000, pendingIntent);
-
-        Toast.makeText(getApplicationContext(), "connected"
-                , Toast.LENGTH_SHORT).show();
+        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mApiClient, 5000, pendingIntent);
     }
 
     @Override
@@ -211,12 +184,9 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             String message = intent.getStringExtra("message");
-            Log.d("MOVE - receiver", "Got message: " + message);
 
             if (message.equals("walking")) {
                 if (!walked) {
-                    Toast.makeText(getApplicationContext(), "Walking", Toast.LENGTH_SHORT).show();
-
                     walked = true;
 
                     Time time = new Time();
@@ -227,8 +197,6 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
             } else if (message.equals("still")) {
 
                 if (walked) {
-                    Toast.makeText(getApplicationContext(), "Stilling", Toast.LENGTH_SHORT).show();
-
                     walked = false;
 
                     Time time = new Time();
@@ -237,8 +205,6 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
                     endWalkTime = time.toMillis(false);
 
                     walkAnimator(endWalkTime - startWalkTime);
-
-                    Toast.makeText(getApplicationContext(), "Doing Reverse - " + Long.toString(endWalkTime - startWalkTime), Toast.LENGTH_SHORT).show();
                 }
 
             }

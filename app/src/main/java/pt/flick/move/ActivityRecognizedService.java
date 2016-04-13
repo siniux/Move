@@ -28,29 +28,27 @@ public class ActivityRecognizedService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if(ActivityRecognitionResult.hasResult(intent)) {
+        if (ActivityRecognitionResult.hasResult(intent)) {
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
-            handleDetectedActivities( result.getProbableActivities() );
+            handleDetectedActivities(result.getProbableActivities());
         }
     }
 
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
 
-        for( DetectedActivity activity : probableActivities ) {
-            switch( activity.getType() ) {
+        for (DetectedActivity activity : probableActivities) {
+            switch (activity.getType()) {
                 case DetectedActivity.STILL: {
-                    Log.e( "ActivityRecogition", "Still: " + activity.getConfidence() );
-                    if( activity.getConfidence() >= 30 ) {
+                    Log.e("ActivityRecogition", "Still: " + activity.getConfidence());
+                    if (activity.getConfidence() >= 50) {
                         sendMessage("still");
-                        Toast.makeText(getApplicationContext(), "Still" , Toast.LENGTH_SHORT).show();
                     }
                     break;
                 }
                 case DetectedActivity.WALKING: {
-                    Log.e( "ActivityRecogition", "Walking: " + activity.getConfidence() );
-                    if( activity.getConfidence() >= 30 ) {
+                    Log.e("ActivityRecogition", "Walking: " + activity.getConfidence());
+                    if (activity.getConfidence() >= 50) {
                         sendMessage("walking");
-
                     }
                     break;
                 }
