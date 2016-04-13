@@ -194,17 +194,21 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
             Log.d("MOVE - receiver", "Got message: " + message);
 
             if (message.equals("walking")) {
-                Toast.makeText(getApplicationContext(), "Walking" , Toast.LENGTH_SHORT).show();
+                if (!walked) {
+                    Toast.makeText(getApplicationContext(), "Walking", Toast.LENGTH_SHORT).show();
 
-                walked = true;
+                    walked = true;
 
-                Time time = new Time();
-                time.setToNow();
+                    Time time = new Time();
+                    time.setToNow();
 
-                startWalkTime = time.toMillis(false);
+                    startWalkTime = time.toMillis(false);
+                }
             } else if (message.equals("still")) {
-                Toast.makeText(getApplicationContext(), "Stilling" , Toast.LENGTH_SHORT).show();
+
                 if (walked) {
+                    Toast.makeText(getApplicationContext(), "Stilling" , Toast.LENGTH_SHORT).show();
+
                     walked = false;
 
                     Time time = new Time();
