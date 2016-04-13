@@ -21,8 +21,8 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
 import android.text.format.Time;
-import android.util.Log;
 import android.view.SurfaceHolder;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
@@ -35,7 +35,7 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
     long duration = 3600000;
 //    long duration = 30000;
 
-    long tempDuration = duration;
+    long tempDuration = 0;
     long walkDuration;
 
     int tempColor;
@@ -48,7 +48,7 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
 
         try {
             if (colorAnimation.isRunning()) {
-                tempColor = (int) colorAnimation.getAnimatedValue();
+//                tempColor = (int) colorAnimation.getAnimatedValue();
                 colorAnimation.end();
             }
         } catch (NullPointerException e) {
@@ -56,7 +56,9 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
         }
 
         colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), tempColor, endColor);
-        colorAnimation.setDuration(tempDuration);
+        colorAnimation.setDuration(duration);
+
+        colorAnimation.setCurrentPlayTime(tempDuration);
 
         colorAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -86,7 +88,7 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
             public void onAnimationEnd(Animator animation) {
                 // done
                 //Por a vibrar aqui
-                Log.d("MOVE", "acabei - Revert");
+//                Log.d("MOVE", "acabei - Revert");
                 tempColor = tempReverseEndColor;
 
                 startAnimator();
@@ -105,9 +107,13 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
 
         tempDuration = colorAnimation.getCurrentPlayTime() - ( (long) (time * 100 / 3.125));
 
+//        Log.d("move - walkAnimator", String.valueOf(tempDuration));
+
         if (tempDuration <= 0) {
             tempDuration = 0;
         }
+
+//        Log.d("move - walkAnimator", String.valueOf(tempDuration));
 
         colorAnimation.setCurrentPlayTime(tempDuration);
 
@@ -133,7 +139,7 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.d("ActivityRecogition", "connected");
+//        Log.d("ActivityRecogition", "connected");
         Intent intent = new Intent(this, ActivityRecognizedService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mApiClient, 5000, pendingIntent);
@@ -187,6 +193,8 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
                     time.setToNow();
 
                     startWalkTime = time.toMillis(false);
+
+//                    Log.d("move - status", String.valueOf(startWalkTime));
                 }
             } else if (message.equals("still")) {
 
@@ -197,6 +205,10 @@ public class MoveWallpaper extends WallpaperService implements GoogleApiClient.C
                     time.setToNow();
 
                     endWalkTime = time.toMillis(false);
+
+//                    Log.d("move - status", String.valueOf(startWalkTime));
+
+//                    Log.d("move - time", Long.toString(endWalkTime - startWalkTime));
 
                     walkAnimator(endWalkTime - startWalkTime);
                 }

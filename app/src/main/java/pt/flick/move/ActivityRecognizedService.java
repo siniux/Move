@@ -55,10 +55,11 @@ public class ActivityRecognizedService extends IntentService {
     }
 
     private void sendMessage(String string) {
-        Log.d("sender", "Broadcasting message");
         Intent intent = new Intent("ActivityRecognized");
         // You can also include some extra data.
         intent.putExtra("message", string);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        Log.d("sender", "Broadcasting message - " + string);
+
     }
 }
